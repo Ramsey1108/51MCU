@@ -1,0 +1,73 @@
+C51 COMPILER V9.00   WENDU                                                                 12/21/2021 00:31:27 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE WENDU
+OBJECT MODULE PLACED IN wendu.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE wendu.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*******************************************************
+   2          ULN2003驱动5V减速步进电机程序
+   3          *********************/
+   4          #include  "wendu.h"     // 这里包含 led.h 这个头文件
+   5          #include<reg52.h>
+   6          //#define uchar unsigned char
+   7          //#define uint  unsigned int
+   8          //#define MotorData P2                    //步进电机控制接口定义
+   9          uchar phasecw[8] ={0x08,0x0c,0x04,0x06,0x02,0x03,0x01,0x09};//正转 电机导通相序 D-C-B-A
+  10          uchar phaseccw[8]={0x09,0x01,0x03,0x02,0x06,0x04,0x0c,0x08};//反转 电机导通相序 A-B-C-D
+  11          //ms延时函数
+  12          void Delay_xms(uint x)
+  13          {
+  14   1       uint i,j;
+  15   1       for(i=0;i<x;i++)
+  16   1        for(j=0;j<112;j++);
+  17   1      }
+  18          //顺时针转动
+  19          void MotorCW(void)
+  20          {
+  21   1       uchar i,j;
+  22   1       for(j=0;j<8;j++)
+  23   1       {
+  24   2              for(i=0;i<8;i++)
+  25   2        {
+  26   3         MotorData=phasecw[i];
+  27   3         Delay_xms(5);//转速调节
+  28   3        }
+  29   2       }
+  30   1      }
+  31          //逆时针转动
+  32          void MotorCCW(void)
+  33          {
+  34   1       uchar i,j;
+  35   1       for(j=0;j<8;j++)
+  36   1       {
+  37   2              for(i=0;i<8;i++)
+  38   2        {
+  39   3         MotorData=phaseccw[i];
+  40   3         Delay_xms(5);//转速调节
+  41   3        }
+  42   2       }
+  43   1      }
+  44          //停止转动
+  45          void MotorStop(void)
+  46          {
+  47   1       MotorData=0x00;
+  48   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     93    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+C51 COMPILER V9.00   WENDU                                                                 12/21/2021 00:31:27 PAGE 2   
+
+   DATA SIZE        =     16       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

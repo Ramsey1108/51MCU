@@ -1,0 +1,4 @@
+"STARTUP.obj",
+"wendu.obj" 
+TO "wendu1" 
+RAMSIZE(256) 

@@ -1,0 +1,138 @@
+C51 COMPILER V9.00   MAIN                                                                  12/21/2021 01:39:36 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include  "lcd.h"
+   2          #include  "wendu.h"
+   3          #include  "led.h"
+   4          
+   5          #define uchar unsigned char
+   6          #define uint unsigned int       // 这些宏定义都可以在头文件 .h 里定义
+   7          //灯
+   8          sbit BlueLed = P1^0;
+   9          sbit YellowLed = P1^1;
+  10          sbit WhileLed = P1^2;
+  11          //
+  12          uchar table3[]="Motor is CCW ";//逆时针
+  13          uchar table4[]="Motor is  CW ";//顺时针
+  14          uchar table5[]="Motor is Stop";//停了
+  15          //主函数
+  16          
+  17           void main()
+  18          {
+  19   1              uchar a;
+  20   1              uchar r;
+  21   1              uint temp;
+  22   1              uint N=64;
+  23   1              init();
+  24   1              P1=0xff;
+  25   1              //uchar num;
+  26   1              /*
+  27   1              for(a=0;a<9;a++)
+  28   1                      {
+  29   1                              write_date(table1[a]);
+  30   1                              delay(10);
+  31   1                      }
+  32   1                      */
+  33   1              write_com(0x80);
+  34   1              for(a=0;a<13;a++)
+  35   1                      {
+  36   2                              write_date(table5[a]);
+  37   2                              delay(10);
+  38   2                      }
+  39   1              delay(20);
+  40   1              write_com(0x80+0x40);
+  41   1              //测试
+  42   1              /*
+  43   1                      for(a=0;a<64;a++)
+  44   1                      {
+  45   1                              MotorCW();
+  46   1                              delay(10);
+  47   1                      }
+  48   1                      */
+  49   1              delay(800);
+  50   1              while(1)
+  51   1              {
+  52   2              //MotorCW();
+  53   2                              //YellowLedLight();
+  54   2                      //      tempchange();
+  55   2                              //delay(800);
+C51 COMPILER V9.00   MAIN                                                                  12/21/2021 01:39:36 PAGE 2   
+
+  56   2                                      
+  57   2                              tempdisplay();
+*** WARNING C206 IN LINE 57 OF MAIN.C: 'tempdisplay': missing function-prototype
+  58   2                              delay(800);
+  59   2                              temp=get_temp();
+*** WARNING C206 IN LINE 59 OF MAIN.C: 'get_temp': missing function-prototype
+  60   2                              delay(800);
+  61   2                                      //测试
+  62   2                              for(r=0;r<64;r++)
+  63   2                              {
+  64   3                                      tempdisplay();
+  65   3                                      delay(800);
+  66   3                                      temp=get_temp();
+  67   3                                      delay(800);
+  68   3                                      if(temp<220)
+  69   3                                      {
+  70   4                                      write_com(0x80);
+  71   4                                      delay(10);
+  72   4                                      for(a=0;a<13;a++)
+  73   4                                              {
+  74   5                                                      write_date(table5[a]);
+  75   5                                                      delay(10);
+  76   5                                              }
+  77   4                                      BlueLedLight(); 
+  78   4                                      }
+  79   3                                      else if(temp>=220 && temp<=250)
+  80   3                                      {
+  81   4                                      //写入液晶第一行
+  82   4                                      write_com(0x80);
+  83   4                                      for(a=0;a<13;a++)
+  84   4                                      {
+  85   5                                              write_date(table4[a]);
+  86   5                                              delay(10);
+  87   5                                      }
+  88   4                                      YellowLedLight();
+  89   4                                      MotorCW();   //顺时针转动       
+  90   4                                      }
+  91   3                                      else if(temp>250)
+  92   3                                      {
+  93   4                                              write_com(0x80);
+  94   4                                      for(a=0;a<13;a++)
+  95   4                                      {
+  96   5                                              write_date(table3[a]);
+  97   5                                              delay(10);
+  98   5                                      }
+  99   4                                      WhileLedLight();
+ 100   4                                      MotorCCW();  //逆时针转动       
+ 101   4                                      }
+ 102   3                              }
+ 103   2      
+ 104   2              }
+ 105   1                      
+ 106   1      }
+ 107          
+ 108          
+ 109          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    303    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+C51 COMPILER V9.00   MAIN                                                                  12/21/2021 01:39:36 PAGE 3   
+
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     42       6
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  2 WARNING(S),  0 ERROR(S)

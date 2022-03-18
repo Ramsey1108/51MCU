@@ -1,0 +1,8 @@
+"STARTUP.obj",
+"wendu.obj",
+"main.obj",
+"1602.obj",
+"18b20.obj",
+"led.obj" 
+TO "wendu_2" 
+RAMSIZE(256) 

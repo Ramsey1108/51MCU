@@ -1,0 +1,100 @@
+<html>
+<body>
+<pre>
+<h1>礦ision Build Log</h1>
+<h2>Project:</h2>
+C:\Users\surface\Desktop\code\51单片机\温度控制系统\温度控制系统.uvproj
+Project File Date:  12/20/2021
+
+<h2>Output:</h2>
+Build target '目标 1'
+assembling STARTUP.A51...
+compiling wendu.c...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_CALCULATEWEEK?WENDU
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?TIMER2?WENDU
+Program Size: data=100.0 xdata=0 code=2433
+creating hex file from "wendu"...
+"wendu" - 0 Error(s), 1 Warning(s).
+Build target '目标 1'
+compiling wendu.c...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_LCD_WRITE_STRING?WENDU
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?EX0_INT?WENDU
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_LCD_WRITE_CHAR?WENDU
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?EX0_INT?WENDU
+Program Size: data=44.2 xdata=0 code=1441
+creating hex file from "wendu1"...
+"wendu1" - 0 Error(s), 2 Warning(s).
+Build target '目标 1'
+compiling wendu.c...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_LCD_WRITE_STRING?WENDU
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?EX0_INT?WENDU
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_LCD_WRITE_CHAR?WENDU
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?EX0_INT?WENDU
+Program Size: data=44.2 xdata=0 code=1438
+creating hex file from "wendu1"...
+"wendu1" - 0 Error(s), 2 Warning(s).
+Build target '目标 1'
+compiling wendu.c...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_LCD_WRITE_STRING?WENDU
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?EX0_INT?WENDU
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_LCD_WRITE_CHAR?WENDU
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?EX0_INT?WENDU
+Program Size: data=44.2 xdata=0 code=1437
+creating hex file from "wendu1"...
+"wendu1" - 0 Error(s), 2 Warning(s).
+Build target '目标 1'
+compiling wendu.c...
+linking...
+Program Size: data=17.0 xdata=0 code=290
+creating hex file from "wendu_2"...
+"wendu_2" - 0 Error(s), 0 Warning(s).
+Build target '目标 1'
+compiling wendu.c...
+linking...
+Program Size: data=17.0 xdata=0 code=290
+creating hex file from "wendu_2"...
+"wendu_2" - 0 Error(s), 0 Warning(s).
+Build target '目标 1'
+compiling wendu.c...
+WENDU.C(42): error C237: 'MotorStop': function already has a body
+目标未创建
+Build target '目标 1'
+compiling wendu.c...
+wendu.c(4): warning C318: can't open file 'l.h'
+WENDU.C(12): error C141: syntax error near 'x', expected ')'
+WENDU.C(14): error C141: syntax error near 'i'
+WENDU.C(14): error C202: 'i': undefined identifier
+WENDU.C(15): error C202: 'i': undefined identifier
+WENDU.C(16): error C202: 'j': undefined identifier
+WENDU.C(21): error C202: 'uchar': undefined identifier
+WENDU.C(21): error C141: syntax error near 'i'
+WENDU.C(22): error C202: 'i': undefined identifier
+WENDU.C(24): error C202: 'MotorData': undefined identifier
+WENDU.C(31): error C202: 'uchar': undefined identifier
+WENDU.C(31): error C141: syntax error near 'i'
+WENDU.C(32): error C202: 'i': undefined identifier
+WENDU.C(34): error C202: 'MotorData': undefined identifier
+WENDU.C(41): error C202: 'MotorData': undefined identifier
+WENDU.C(46): error C202: 'uint': undefined identifier
+WENDU.C(46): error C141: syntax error near 'i'
+WENDU.C(50): error C202: 'i': undefined identifier
+WENDU.C(56): error C202: 'i': undefined identifier
+目标未创建

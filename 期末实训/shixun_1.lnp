@@ -1,0 +1,5 @@
+"STARTUP.obj",
+"shixun.obj",
+"lcd12864.obj" 
+TO "shixun_1" 
+RAMSIZE(256) 
