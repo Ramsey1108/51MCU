@@ -1,0 +1,193 @@
+BL51 BANKED LINKER/LOCATER V6.22                                                        07/25/2021  12:50:07  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE STARTUP.obj, lesson4_1.obj TO lesson4_1 RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  STARTUP.obj (?C_STARTUP)
+  lesson4_1.obj (LESSON4_1)
+
+
+LINK MAP OF MODULE:  lesson4_1 (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0005H     UNIT         ?DT?LESSON4_1
+            IDATA   000DH     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+                    0003H     0008H                  *** GAP ***
+            CODE    000BH     0003H     ABSOLUTE     
+            CODE    000EH     004EH     UNIT         ?PR?MAIN?LESSON4_1
+            CODE    005CH     001EH     UNIT         ?PR?_DELAYMS?LESSON4_1
+            CODE    007AH     0016H     UNIT         ?CO?LESSON4_1
+            CODE    0090H     000CH     UNIT         ?C_C51STARTUP
+            CODE    009CH     0009H     UNIT         ?PR?TIME_0?LESSON4_1
+
+
+
+OVERLAY MAP OF MODULE:   lesson4_1 (?C_STARTUP)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?LESSON4_1
+
+?PR?MAIN?LESSON4_1
+  +--> ?CO?LESSON4_1
+
+
+
+SYMBOL TABLE OF MODULE:  lesson4_1 (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:0090H         SEGMENT       ?C_C51STARTUP
+  I:000DH         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/25/2021  12:50:07  PAGE 2
+
+
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:0093H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0100H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:0090H         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         126
+  C:0090H         LINE#         133
+  C:0092H         LINE#         134
+  C:0093H         LINE#         135
+  C:0094H         LINE#         136
+  C:0096H         LINE#         185
+  C:0099H         LINE#         196
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        LESSON4_1
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  B:00A8H.7       PUBLIC        EA
+  C:007AH         PUBLIC        table
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  C:000EH         PUBLIC        main
+  B:00A0H.6       PUBLIC        dula
+  B:00A0H.7       PUBLIC        wela
+  D:0008H         PUBLIC        numdu
+  D:0009H         PUBLIC        numwe
+  D:0098H         PUBLIC        SCON
+  D:0089H         PUBLIC        TMOD
+  D:0088H         PUBLIC        TCON
+  C:009CH         PUBLIC        time_0
+  D:000AH         PUBLIC        aa
+  D:000BH         PUBLIC        bb
+  B:00A8H.1       PUBLIC        ET0
+  D:008CH         PUBLIC        TH0
+  D:008AH         PUBLIC        TL0
+  D:000CH         PUBLIC        num
+  B:0088H.4       PUBLIC        TR0
+  D:00C8H         PUBLIC        T2CON
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/25/2021  12:50:07  PAGE 3
+
+
+  C:008AH         PUBLIC        tablewe
+  C:005CH         PUBLIC        _delayms
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          MAIN
+  C:000EH         LINE#         22
+  C:000EH         LINE#         23
+  C:000EH         LINE#         25
+  C:0011H         LINE#         26
+  C:0013H         LINE#         27
+  C:0015H         LINE#         28
+  C:0017H         LINE#         33
+  C:001AH         LINE#         36
+  C:001DH         LINE#         37
+  C:0020H         LINE#         42
+  C:0022H         LINE#         43
+  C:0024H         LINE#         44
+  C:0026H         LINE#         58
+  C:0026H         LINE#         59
+  C:0026H         LINE#         61
+  C:002BH         LINE#         62
+  C:002BH         LINE#         63
+  C:002EH         LINE#         64
+  C:0030H         LINE#         65
+  C:0035H         LINE#         66
+  C:0035H         LINE#         67
+  C:0038H         LINE#         68
+  C:0038H         LINE#         70
+  C:003AH         LINE#         71
+  C:0042H         LINE#         72
+  C:0044H         LINE#         74
+  C:0046H         LINE#         75
+  C:004EH         LINE#         76
+  C:0050H         LINE#         77
+  C:0052H         LINE#         78
+  C:0057H         LINE#         79
+  C:0057H         LINE#         80
+  C:005AH         LINE#         81
+  C:005AH         LINE#         82
+  C:005AH         LINE#         122
+  -------         ENDPROC       MAIN
+  -------         PROC          _DELAYMS
+  D:0006H         SYMBOL        xms
+  -------         DO            
+  D:0006H         SYMBOL        i
+  D:0004H         SYMBOL        j
+  -------         ENDDO         
+  C:005CH         LINE#         124
+  C:005CH         LINE#         125
+  C:005CH         LINE#         127
+  C:0065H         LINE#         128
+  C:0079H         LINE#         130
+  -------         ENDPROC       _DELAYMS
+  -------         PROC          TIME_0
+  C:009CH         LINE#         132
+  C:009CH         LINE#         136
+  C:009FH         LINE#         137
+  C:00A2H         LINE#         138
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/25/2021  12:50:07  PAGE 4
+
+
+  C:00A4H         LINE#         155
+  -------         ENDPROC       TIME_0
+  -------         ENDMOD        LESSON4_1
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DELAYMS?LESSON4_1
+
+Program Size: data=14.0 xdata=0 code=157
+LINK/LOCATE RUN COMPLETE.  1 WARNING(S),  0 ERROR(S)

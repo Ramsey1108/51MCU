@@ -1,0 +1,49 @@
+C51 COMPILER V9.00   NO2                                                                   07/19/2021 20:24:06 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE NO2
+OBJECT MODULE PLACED IN no2.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE no2.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*
+   2          #include <reg52.h>
+   3          #define unit unsigned int
+   4          sbit D1=P1^0;
+   5          void delay1s();
+   6          
+   7          //后面的P1一定需要大写 系统规定
+   8          
+   9          void main()
+  10          {
+  11                  while(1)
+  12                  {
+  13                          D1=0;
+  14                          delay1s();
+  15                          D1=1;
+  16                          delay1s();
+  17                  }
+  18                  
+  19          }
+  20          void delay1s()
+  21          {
+  22                  unit i,j;
+  23                  for(i=500;i>0;i--)
+  24                          for(j=110;j>0;j--);
+  25          }
+  26          */
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   ----    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

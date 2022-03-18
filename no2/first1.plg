@@ -1,0 +1,62 @@
+<html>
+<body>
+<pre>
+<h1>礦ision Build Log</h1>
+<h2>Project:</h2>
+C:\Users\surface\Desktop\code\51单片机\no2\first1.uvproj
+Project File Date:  07/17/2021
+
+<h2>Output:</h2>
+Build target '目标 1'
+compiling no2.c...
+linking...
+Program Size: data=9.0 xdata=0 code=54
+creating hex file from "first1"...
+"first1" - 0 Error(s), 0 Warning(s).
+Build target '目标 1'
+assembling STARTUP.A51...
+compiling no2.c...
+compiling WaterLamp.c...
+WATERLAMP.C(11): error C202: 'Oxfe': undefined identifier
+目标未创建
+Build target '目标 1'
+assembling STARTUP.A51...
+compiling no2.c...
+compiling WaterLamp.c...
+linking...
+*** ERROR L104: MULTIPLE PUBLIC DEFINITIONS
+    SYMBOL:  MAIN
+    MODULE:  WaterLamp.obj (WATERLAMP)
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?MAIN?WATERLAMP
+Program Size: data=10.0 xdata=0 code=112
+目标未创建
+Build target '目标 1'
+linking...
+*** ERROR L104: MULTIPLE PUBLIC DEFINITIONS
+    SYMBOL:  MAIN
+    MODULE:  WaterLamp.obj (WATERLAMP)
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?MAIN?WATERLAMP
+Program Size: data=10.0 xdata=0 code=112
+目标未创建
+Build target '目标 1'
+linking...
+*** ERROR L104: MULTIPLE PUBLIC DEFINITIONS
+    SYMBOL:  MAIN
+    MODULE:  WaterLamp.obj (WATERLAMP)
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?MAIN?WATERLAMP
+Program Size: data=10.0 xdata=0 code=112
+目标未创建
+Build target '目标 1'
+compiling no2.c...
+linking...
+Program Size: data=10.0 xdata=0 code=73
+creating hex file from "first1"...
+"first1" - 0 Error(s), 0 Warning(s).
+Build target '目标 1'
+linking...
+Program Size: data=10.0 xdata=0 code=73
+creating hex file from "WaterLamp"...
+"WaterLamp" - 0 Error(s), 0 Warning(s).

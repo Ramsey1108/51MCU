@@ -1,0 +1,81 @@
+C51 COMPILER V9.00   LESSON6_6_1                                                           08/05/2021 22:24:34 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE LESSON6_6_1
+OBJECT MODULE PLACED IN lesson6.6_1.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE lesson6.6_1.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #define uint unsigned int    //宏定义
+   3          #define uchar unsigned char  //宏定义
+   4          sbit dula=P2^6;
+   5          sbit wela=P2^7;
+   6          sbit dawr=P3^6;
+   7          sbit dacs=P3^2;
+   8          sbit beep=P2^3;//蜂蜜器接口
+   9          void delay(uint z);
+  10          void main()
+  11          {
+  12   1                 uchar val,flag;
+  13   1                 dula=0;//接通
+  14   1                 wela=0;//接通
+  15   1                 dacs=0;
+  16   1                 dawr=0;
+  17   1                 P0=0;
+  18   1                 while(1)
+  19   1                 {
+  20   2                              if(flag == 0)//标志位为0的话
+  21   2                              {
+  22   3                                      val=val+5;//没到255就慢慢加
+  23   3                                      P0=val;
+  24   3                                      if(val == 255)
+  25   3                                      {
+  26   4                                              flag=1;//标志位置1
+  27   4                                              beep=0;//蜂鸣器响;
+  28   4                                              delay(100);//延时
+  29   4                                              beep=1;
+  30   4                                      }
+  31   3                                      delay(50);
+  32   3                              }
+  33   2                                      else
+  34   2                                      {
+  35   3                                              val -=5;//到了255之后就开始减
+  36   3                                              P0=val;
+  37   3                                              if(val == 0)//减到0了
+  38   3                                              {
+  39   4                                                      flag=0;//状态位变回原来的
+  40   4                                                      beep=0;//蜂鸣器响一下
+  41   4                                                      delay(100);//延时;
+  42   4                                                      beep=1;
+  43   4      
+  44   4                                              }
+  45   3                                              delay(50);//延时;
+  46   3                                      }
+  47   2      
+  48   2                              
+  49   2                 }
+  50   1      }
+  51          void delay(uint z)     //延时子函数
+  52          {
+  53   1              uint x,y;
+  54   1              for(x=z;x>0;x--)
+  55   1                      for(y=110;y>0;y--);
+C51 COMPILER V9.00   LESSON6_6_1                                                           08/05/2021 22:24:34 PAGE 2   
+
+  56   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    114    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

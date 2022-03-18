@@ -1,0 +1,308 @@
+C51 COMPILER V9.00   LESSON10_1                                                            08/28/2021 13:48:25 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE LESSON10_1
+OBJECT MODULE PLACED IN lesson10_1.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE lesson10_1.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #include<intrins.h>
+   3          #include"lesson10_2.h"
+   4          #define uint unsigned int    //宏定义
+   5          #define uchar unsigned char  //宏定义
+   6          sbit dula=P2^6;
+   7          sbit wela=P2^7;//声明锁存端关闭led数码管
+   8          sbit lcden=P3^4;//液晶使能端
+   9          sbit lcdrs=P3^5;//液晶命令数据端
+  10          sbit beep=P2^3;//蜂鸣器端口
+  11          //按键的定义
+  12          sbit s1=P3^0;//S9按键
+  13          sbit s2=P3^1;//S13按键
+  14          sbit s3=P3^2;//S17按键
+  15          sbit rd=P3^7;
+  16          
+  17          uchar code table[]="  2021-8-25 WEN";
+  18          //uchar code table1[]="    00:00:00";
+  19          uchar count,s1num;//按了几次按键
+  20          char shi,fen,miao;//定时器变量和显示时分秒的变量
+  21          void delay1ms(uint z)     //延时子函数
+  22          {
+  23   1              uint x,y;
+  24   1              for(x=z;x>0;x--)
+  25   1                      for(y=110;y>0;y--);
+  26   1      }
+  27          void write_com(uchar com)
+  28          {
+  29   1              lcdrs=0;//选择写命令模式
+  30   1              P0=com;//把命令送到数据总线上面去
+  31   1              delay1ms(5);
+  32   1              lcden=1; //一低一高可以传出数据
+  33   1              delay1ms(5);//稍微延时可以把数据传出去
+  34   1              lcden=0;//搞完重新把他置低
+  35   1      
+  36   1      }
+  37          void write_data(uchar date)
+  38          {
+  39   1              lcdrs=1;//选择写数据模式
+  40   1              P0=date;
+  41   1              delay1ms(5);
+  42   1              lcden=1; //一低一高可以传出数据
+  43   1              delay1ms(5);//稍微延时可以把数据传出去
+  44   1              lcden=0;//搞完重新把他置低
+  45   1      }
+  46          void write_sfm(uchar add, uchar date)//add是位置已经算好了
+  47          {       
+  48   1              uchar shi,ge;
+  49   1              shi=date/10;
+  50   1              ge=date%10;//分离出十位和个位
+  51   1              write_com(0x80+0x40+add);//设置显示位置
+  52   1              write_data(0x30+shi);//0x30是ASCII码 加上数字就是显示数字
+  53   1              //初始化的时候自动后移了所以不用刻意往后面推一位
+  54   1              write_data(0x30+ge);
+  55   1      }
+C51 COMPILER V9.00   LESSON10_1                                                            08/28/2021 13:48:25 PAGE 2   
+
+  56          void init()//初始化程序
+  57          {
+  58   1              uchar num;      
+  59   1              dula=0;
+  60   1              wela=0;//把控制数码管亮的两个锁存端都关了
+  61   1              lcden=0;
+  62   1              rd=0;//矩阵键盘第四列置低，分离出独立按键
+  63   1              //初始化变量值
+  64   1              shi=0;
+  65   1              fen=0;
+  66   1              miao=0;
+  67   1              //count=0;
+  68   1              //24c02初始化
+  69   1              init_24c02();
+  70   1              //测试
+  71   1              /*
+  72   1              write_add(1,0);
+  73   1              delay1ms(5);
+  74   1              write_add(2,0);
+  75   1              delay1ms(5);
+  76   1              write_add(3,0);
+  77   1              delay1ms(5);
+  78   1              */
+  79   1      
+  80   1              write_com(0x38);
+  81   1              write_com(0x06);//地址指针自动 +1
+  82   1              write_com(0x0c);//不显示光标
+  83   1              write_com(0x01); //显示清0数据指针清0
+  84   1      
+  85   1              write_com(0x80);//写第一行
+  86   1      
+  87   1              for(num=0;num<15;num++)
+  88   1                      {
+  89   2                              write_data(table[num]);
+  90   2                              delay1ms(5);
+  91   2                      }
+  92   1              //第二行显示位置两个地方加分号先
+  93   1                      write_com(0x80+0x40+6);
+  94   1                      write_data(':');
+  95   1                      delay1ms(5);
+  96   1                      write_com(0x80+0x40+9);
+  97   1                      write_data(':');
+  98   1                      delay1ms(5);
+  99   1                      miao=read_add(1); //从存储器读取
+ 100   1                      fen=read_add(2);
+ 101   1                      shi=read_add(3);
+ 102   1              //读取的数据送去液晶显示
+ 103   1                      write_sfm(10,miao);
+ 104   1                      write_sfm(7,fen);
+ 105   1                      write_sfm(4,shi);
+ 106   1      
+ 107   1              //定时器的初始化
+ 108   1              TMOD=0X01;
+ 109   1              TH0=(65536-50000)/256;
+ 110   1              TL0=(65536-50000)%256;
+ 111   1              EA=1;
+ 112   1              ET0=1;
+ 113   1              TR0=1;//开始计时
+ 114   1      
+ 115   1      
+ 116   1      }
+ 117          void di()//蜂鸣器发声函数
+C51 COMPILER V9.00   LESSON10_1                                                            08/28/2021 13:48:25 PAGE 3   
+
+ 118          {
+ 119   1              beep=0;
+ 120   1              delay1ms(100);
+ 121   1              beep=1;
+ 122   1      }
+ 123          void keyscan()
+ 124          {
+ 125   1              if(s1 == 0);//功能键被按下
+ 126   1              {
+ 127   2                      delay1ms(5);
+ 128   2                      if(s1 == 0)//消抖
+ 129   2                      {
+ 130   3                              s1num++;
+ 131   3                              while(!s1);//松手确认
+ 132   3                              di();//松手了才响
+ 133   3                              if(s1num == 1)
+ 134   3                              {
+ 135   4                                      TR0=0;//关闭定时器
+ 136   4                                      write_com(0x80+0x40+10);//定位到秒的位置
+ 137   4                                      write_com(0x0f);//光标开始闪烁;
+ 138   4                              }
+ 139   3                              if(s1num == 2)
+ 140   3                              {       
+ 141   4                                      write_com(0x80+0x40+7);//定位到分钟的位置
+ 142   4                              }
+ 143   3                              if(s1num == 3)
+ 144   3                              {       
+ 145   4                                      write_com(0x80+0x40+4);//定位到秒钟的位置
+ 146   4                              }
+ 147   3                              if(s1num == 4)
+ 148   3                              {       
+ 149   4                                      s1num=0;//按了四次就退出
+ 150   4                                      write_com(0x0c);//光标不闪烁了
+ 151   4                                      TR0=1;//调完了定时器开始走
+ 152   4                                      
+ 153   4                              }
+ 154   3                      }
+ 155   2              }
+ 156   1              if(s1num != 0)//确认功能键被按下的时候
+ 157   1              { 
+ 158   2                      if(s2 == 0)//增加键按下
+ 159   2                      {
+ 160   3                              delay1ms(5);
+ 161   3                              if(s2 == 0)//消抖
+ 162   3                              {
+ 163   4                                      while(!s2);//松手确认
+ 164   4                                      di();
+ 165   4                                      if(s1num == 1)//按一次调整秒钟按到秒的时候
+ 166   4                                      {
+ 167   5                                              miao++;
+ 168   5                                              if(miao == 60)
+ 169   5                                                      miao =0 ;//加到60就清零
+ 170   5                                              write_sfm(10,miao);//按一次液晶更新一次
+ 171   5                                              write_com(0x80+0x40+10);//定位到秒的位置
+ 172   5                                              write_add(1,miao);//向24c02写入数据
+ 173   5                                      }
+ 174   4                                      if(s1num == 2)//按一次调整秒钟按到秒的时候
+ 175   4                                      {
+ 176   5                                              fen++;
+ 177   5                                              if(fen == 60)
+ 178   5                                                      fen =0 ;//加到60就清零
+ 179   5                                              write_sfm(7,fen);//按一次液晶更新一次
+C51 COMPILER V9.00   LESSON10_1                                                            08/28/2021 13:48:25 PAGE 4   
+
+ 180   5                                              write_com(0x80+0x40+7);//定位到秒的位置
+ 181   5                                              write_add(2,fen);//向24c02写入数据
+ 182   5                                      }
+ 183   4                                      if(s1num == 3)//按一次调整秒钟按到秒的时候
+ 184   4                                      {
+ 185   5                                              shi++;
+ 186   5                                              if(shi == 24)
+ 187   5                                                      shi =0 ;//加到60就清零
+ 188   5                                              write_sfm(4,shi);//按一次液晶更新一次
+ 189   5                                              write_com(0x80+0x40+4);//定位到秒的位置
+ 190   5                                              write_add(3,shi);//向24c02写入数据
+ 191   5                                      }
+ 192   4                              }
+ 193   3                      }
+ 194   2                      if(s3 == 0)//减小键按下
+ 195   2                      {
+ 196   3                              delay1ms(5);
+ 197   3                              if(s3 == 0);//消抖
+ 198   3                              {
+ 199   4                                      while(!s3);//松手确认
+ 200   4                                      di();
+ 201   4                                      if(s1num ==1)//按了减小秒钟的
+ 202   4                                      {
+ 203   5                                              miao--;
+ 204   5                                              if(miao == -1)//到了0再按一次就60
+ 205   5                                                      miao=59;
+ 206   5                                              write_sfm(10,miao);//按一次液晶更新一次
+ 207   5                                              write_com(0x80+0x40+10);//定位到秒的位置
+ 208   5                                              write_add(1,miao);//向24c02写入数据
+ 209   5                                      }
+ 210   4                                      if(s1num ==2)//按了减小分钟的
+ 211   4                                      {
+ 212   5                                              fen--;
+ 213   5                                              if(fen == -1)//到了0再按一次就60
+ 214   5                                                      fen=59;
+ 215   5                                              write_sfm(7,fen);//按一次液晶更新一次
+ 216   5                                              write_com(0x80+0x40+7);//定位到秒的位置
+ 217   5                                              write_add(2,fen);//向24c02写入数据
+ 218   5                                      }
+ 219   4                                      if(s1num ==3)//按了减小秒钟的
+ 220   4                                      {
+ 221   5                                              shi--;
+ 222   5                                              if(shi == -1)//到了0再按一次就60
+ 223   5                                                      shi=23;
+ 224   5                                              write_sfm(4,shi);//按一次液晶更新一次
+ 225   5                                              write_com(0x80+0x40+4);//定位到秒的位置
+ 226   5                                              write_add(3,shi);//向24c02写入数据
+ 227   5                                      }
+ 228   4                              }
+ 229   3                      }
+ 230   2              }
+ 231   1      }
+ 232          int main()
+ 233          {
+ 234   1              init();
+ 235   1              while(1)
+ 236   1              {
+ 237   2                      keyscan();      
+ 238   2              }
+ 239   1      }
+ 240          void t0() interrupt 1   //定时中断服务函数
+ 241          {
+C51 COMPILER V9.00   LESSON10_1                                                            08/28/2021 13:48:25 PAGE 5   
+
+ 242   1              TH0=(65536-50000)/256;
+ 243   1              TL0=(65536-50000)%256;//重新计数
+ 244   1              count++;//每过50ms  tcnt加1
+ 245   1              if(count == 18)//1s到了(用11.0592 MHZ 精确的)
+ 246   1              {
+ 247   2                      count=0;//清零
+ 248   2                      miao++;//加一秒
+ 249   2                      if(miao==60)//1分钟到了
+ 250   2                      {
+ 251   3                              miao=0;//清零
+ 252   3                              fen++;//加一分钟
+ 253   3                              if(fen == 60)//一小时到了
+ 254   3                              {
+ 255   4                                      fen=0;//清零
+ 256   4                                      shi++;
+ 257   4                                      if(shi == 24)//一天到了
+ 258   4                                      {
+ 259   5                                              shi = 0;
+ 260   5                                      }
+ 261   4                                      write_sfm(4,shi);//若小时改变则重新写入
+ 262   4                                      write_add(3,shi);//数据改变立马存储到24c02
+ 263   4                              }
+ 264   3                              write_sfm(7,fen);//若分钟改变则重新写入
+ 265   3                              write_add(2,fen);//数据改变立马存储到24c02      
+ 266   3                      }
+ 267   2                      write_sfm(10,miao);//若秒钟改变则重新写入
+ 268   2                      write_add(1,miao);//数据改变立马存储到24c02
+ 269   2              }
+ 270   1      }
+ 271          
+ 272          
+ 273          
+ 274          
+ 275          
+ 276          
+ 277          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    839    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      5    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
