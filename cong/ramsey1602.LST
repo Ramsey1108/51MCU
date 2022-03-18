@@ -1,0 +1,287 @@
+C51 COMPILER V9.00   RAMSEY1602                                                            11/02/2021 23:56:48 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE RAMSEY1602
+OBJECT MODULE PLACED IN ramsey1602.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE ramsey1602.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include<reg52.h>
+   2          #define uchar unsigned char 
+   3          #define uint unsigned int
+   4          //sbit dula=P2^6;
+   5          //sbit wela=P2^7;
+   6          sbit s1=P2^0;
+   7          sbit s2=P2^1;
+   8          sbit s3=P2^2;
+   9          sbit rs=P1^1;
+  10          sbit rd=P1^2;
+  11          sbit lcden=P1^3;
+  12          //
+  13          sbit LED=P1^0;
+  14          sbit beep=P2^3;
+  15          uchar count,s1num;
+  16          char miao,shi,fen;
+  17          uchar code table[]=" 2021-11-02 Tue";
+  18          uchar code table1[]="    00:00:00";
+  19          void delay(uint z)
+  20          {
+  21   1              uint x,y;
+  22   1              for(x=z;x>0;x--)
+  23   1                      for(y=110;y>0;y--);
+  24   1      }
+  25          //·äÃùÆ÷·¢Éù
+  26          void beepon(){
+  27   1      beep=0;
+  28   1      delay(100);
+  29   1      beep=1;
+  30   1      }
+  31          void write_com(uchar com)
+  32          {
+  33   1              rs=0;
+  34   1              lcden=0;
+  35   1              rd=0;
+  36   1              P0=com;
+  37   1              delay(10);
+  38   1              lcden=1;
+  39   1              delay(20);
+  40   1              lcden=0;        
+  41   1      }
+  42          
+  43          void write_date(uchar date)
+  44          {
+  45   1              rs=1;
+  46   1              lcden=0;
+  47   1              rd=0;
+  48   1              P0=date;
+  49   1              delay(10);
+  50   1              lcden=1;
+  51   1              delay(20);
+  52   1              lcden=0;        
+  53   1      }
+  54          
+  55          void init()
+C51 COMPILER V9.00   RAMSEY1602                                                            11/02/2021 23:56:48 PAGE 2   
+
+  56          {
+  57   1              uchar num;
+  58   1      //      dula=0;
+  59   1      //      wela=0;
+  60   1              lcden=0;
+  61   1      //      fen=59;
+  62   1      //      miao=53;
+  63   1      //      shi=23;
+  64   1              write_com(0x38);
+  65   1              delay(10);
+  66   1              write_com(0x0c);
+  67   1              write_com(0x06);
+  68   1              write_com(0x01);
+  69   1              write_com(0x80);
+  70   1              for(num=0;num<15;num++)
+  71   1                      {
+  72   2                              write_date(table[num]);
+  73   2                              delay(10);
+  74   2                      }
+  75   1              write_com(0x80+0x40);
+  76   1              for(num=0;num<12;num++)
+  77   1                      {
+  78   2                              write_date(table1[num]);
+  79   2                              delay(10);
+  80   2                      }
+  81   1              TMOD=0x01;
+  82   1              TH0=(65536-50000)/256;
+  83   1              TL0=(65536-50000)%256;
+  84   1              EA=1;
+  85   1              ET0=1;
+  86   1              TR0=1;
+  87   1      }
+  88          
+  89          void write_sfm(uchar add,uchar date)
+  90          {
+  91   1              uchar shi,ge;
+  92   1              shi=date/10;
+  93   1              ge=date%10;
+  94   1              write_com(0x80+0x40+add);
+  95   1              write_date(0x30+shi);
+  96   1              write_date(0x30+ge);
+  97   1      }
+  98          
+  99          void keyscan()
+ 100          {
+ 101   1              rd=0;
+ 102   1              if(s1==0)       
+ 103   1              {
+ 104   2                      
+ 105   2                      delay(5);
+ 106   2                      if(s1==0)
+ 107   2                      {       
+ 108   3                              beepon();
+ 109   3                              s1num++;
+ 110   3                              while(!s1);
+ 111   3                              if(s1num==1)
+ 112   3                              {
+ 113   4                                      TR0=0;
+ 114   4                                      write_com(0x80+0x40+10);
+ 115   4                                      write_com(0x0f);
+ 116   4                              }
+ 117   3              }
+C51 COMPILER V9.00   RAMSEY1602                                                            11/02/2021 23:56:48 PAGE 3   
+
+ 118   2                              if(s1num==2)
+ 119   2                              {
+ 120   3                                      write_com(0x80+0x40+7);
+ 121   3                              }
+ 122   2                              if(s1num==3)
+ 123   2                              {
+ 124   3                                      write_com(0x80+0x40+4);
+ 125   3                              }
+ 126   2                              if(s1num==4)
+ 127   2                              {
+ 128   3                                      s1num=0;
+ 129   3                                      write_com(0x0c);
+ 130   3                                      TR0=1;
+ 131   3                              }
+ 132   2      
+ 133   2                                      
+ 134   2                      }
+ 135   1                      if(s1num!=0)
+ 136   1                      {
+ 137   2                              if(s2==0)
+ 138   2                              {
+ 139   3                                      
+ 140   3                                      delay(5);
+ 141   3                                      if(s2==0)
+ 142   3                                      {
+ 143   4                                              beepon();
+ 144   4                                              while(!s2);
+ 145   4                                              if(s1num==1)
+ 146   4                                              {
+ 147   5                                                      miao++;
+ 148   5                                                      if(miao==60)
+ 149   5                                                              miao=0;
+ 150   5                                                      write_sfm(10,miao);
+ 151   5                                                      write_com(0x80+0x40+10);
+ 152   5                                                      
+ 153   5                                                      
+ 154   5                                              }
+ 155   4                                              if(s1num==2)
+ 156   4                                              {
+ 157   5                                                      fen++;
+ 158   5                                                      if(fen==60)
+ 159   5                                                              fen=0;
+ 160   5                                                      write_sfm(7,fen);
+ 161   5                                                      write_com(0x80+0x40+7);
+ 162   5                                              }
+ 163   4                                              if(s1num==3)
+ 164   4                                              {
+ 165   5                                                      shi++;
+ 166   5                                                      if(shi==24)
+ 167   5                                                              shi=0;
+ 168   5                                                      write_sfm(4,shi);
+ 169   5                                                      write_com(0x80+0x40+4);
+ 170   5                                              }
+ 171   4                                      }
+ 172   3                              }
+ 173   2                              if(s3==0)
+ 174   2                              {
+ 175   3                                      delay(5);
+ 176   3                                      if(s3==0)
+ 177   3                                      {
+ 178   4                                              beepon();
+ 179   4                                              while(!s3);
+C51 COMPILER V9.00   RAMSEY1602                                                            11/02/2021 23:56:48 PAGE 4   
+
+ 180   4                                              if(s1num==1)
+ 181   4                                              {
+ 182   5                                              /*      if(miao==0)
+ 183   5                                                      {
+ 184   5                                                              miao=59;
+ 185   5                                                              write_sfm(10,miao);
+ 186   5                                                              write_com(0x80+0x40+10);
+ 187   5                                                      }*/
+ 188   5                                                      miao--;
+ 189   5                                                      if(miao==-1)
+ 190   5                                                              miao=59;
+ 191   5                                                      write_sfm(10,miao);
+ 192   5                                                      write_com(0x80+0x40+10);
+ 193   5                                              }
+ 194   4                                              if(s1num==2)
+ 195   4                                              {
+ 196   5                                                      fen--;
+ 197   5                                                      if(fen==-1)
+ 198   5                                                              fen=59;
+ 199   5                                                      write_sfm(7,fen);
+ 200   5                                                      write_com(0x80+0x40+7);
+ 201   5                                              }
+ 202   4                                              if(s1num==3)
+ 203   4                                              {
+ 204   5                                                      shi--;
+ 205   5                                                      if(shi==-1)
+ 206   5                                                              shi=23;
+ 207   5                                                      write_sfm(4,shi);
+ 208   5                                                      write_com(0x80+0x40+4);
+ 209   5                                              }
+ 210   4                                      }
+ 211   3                              }
+ 212   2                      }
+ 213   1      }
+ 214          void main()
+ 215          {
+ 216   1              init();
+ 217   1              while(1)
+ 218   1              {
+ 219   2                      keyscan();
+ 220   2                      
+ 221   2              }
+ 222   1      //      while(1);
+ 223   1      }
+ 224          
+ 225          void timer0() interrupt 1
+ 226          {
+ 227   1              TH0=(65536-50000)/256;
+ 228   1              TL0=(65536-50000)%256;
+ 229   1              count++;
+ 230   1      if(count==18)
+ 231   1                      {
+ 232   2                              count=0;
+ 233   2                              miao++;
+ 234   2                              LED=!LED;
+ 235   2                      //      beepon();
+ 236   2                              if(miao==60)
+ 237   2                              {
+ 238   3                                      miao=0;
+ 239   3                                      fen++;
+ 240   3                                      if(fen==60)
+ 241   3                                      {
+C51 COMPILER V9.00   RAMSEY1602                                                            11/02/2021 23:56:48 PAGE 5   
+
+ 242   4                                              fen=0;
+ 243   4                                              shi++;
+ 244   4                                              if(shi==24)
+ 245   4                                              {
+ 246   5                                                      shi=0;
+ 247   5                                              }
+ 248   4                                              write_sfm(4,shi);
+ 249   4                                      }
+ 250   3                                      write_sfm(7,fen);
+ 251   3                              }
+ 252   2                              write_sfm(10,miao);
+ 253   2                              
+ 254   2                      }       
+ 255   1      }
+ 256          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    590    ----
+   CONSTANT SIZE    =     29    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      5    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

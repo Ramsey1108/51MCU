@@ -1,0 +1,4 @@
+"STARTUP.obj",
+"ramsey1602.obj" 
+TO "ramsey_1602" 
+RAMSIZE(256) 

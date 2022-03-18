@@ -1,0 +1,349 @@
+C51 COMPILER V9.00   ESP8266_1                                                             12/29/2021 15:08:07 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE ESP8266_1
+OBJECT MODULE PLACED IN esp8266_1.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE esp8266_1.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*********************************************************************
+   2          ÌâÄ¿£º»ùÓÚ51µ¥Æ¬»úµÄÎ¢ÐÅÏûÏ¢ÍÆËÍ£¬postÄ£Ê½
+   3          ÄÚÈÝ£ºÍ¨¹ýMCUÉÏÎ»»ú¶ÔESP8266wifiÄ£¿éµÄ¿ØÖÆºÍÉèÖÃ£¬ÊµÏÖstc89c51ÏòÎ¢ÐÅÍÆËÍÏûÏ¢
+   4          ×¢Òâ£º¾§ÕñÒ»¶¨ÊÇ11.0592MHz¡£
+   5          ¹ØÓÚUID£ºÔÚ°Í·¨ÔÆ×¢²áµÇÂ½£¬¼´¿É¿´µ½×Ô¼ºUID£¬ÍÆËÍÎ¢ÐÅÏûÏ¢£¬ÐèÒªÊÖ»ú°ó¶¨Î¢ÐÅ£¬bemfa.comÔÚ¿ØÖÆÌ¨½øÐÐ°ó¶¨¼´¿É¡
+             -£
+   6          QQ½»Á÷Èº£º824273231
+   7          °Í·¨ÔÆ¹ÙÍø£ºbemfa.com
+   8          Ê±¼ä£º2020/04/02
+   9          ×¢Òâ£ºÐÂÂòµÄESP8266-01Ä¬ÈÏÊÇ115200²¨ÌØÂÊ£¬ÐèÒªÀûÓÃ´®¿Úµ÷ÊÔÖúÊÖ¸ü¸Äesp8266²¨ÌØÂÊÎª9600
+  10          ¸ü¸Ä·½·¨£ºUSB×ª´®¿Ú°åÁ¬½Óµ½ESP8266£¬²¨ÌØÂÊ115200£¬·¢ËÍ  AT+UART=9600,8,1,0,0   //Ä©Î²ÓÐ»Ø³µ»»ÐÐ
+  11          USB×ª´®¿Ú°å½ÓÏß·½·¨£ºtx--rx ,rx--tx,gnd-gnd,3.3v--3.3v,EN--3.3v //esp8266--USB×ª´®¿Ú°å
+  12          ¹Ù·½ÎÄµµ¼û¹ÙÍø£ºhttp://www.cloud.bemfa.com/docs/#/?id=_51-tcp%e5%88%9b%e5%ae%a2%e4%ba%91
+  13          
+  14          ¿ØÖÆLED£¬¿ØÖÆÒý½ÅP10
+  15          ********************************************************************/
+  16          #include <reg52.h>  
+  17          #include <stdio.h>
+  18          #include <string.h>//°üº¬Í·ÎÄ¼þ
+  19          #include <intrins.h>
+  20          #define uint unsigned int
+  21          #define uchar unsigned char
+  22          //²âÊÔ¼ÌµçÆ÷
+  23          sbit IN1 = P2^0;
+  24          //¿ªÊ¼¶¨ÒåLED
+  25          //uchar table2[]="l";
+  26          uchar code table3[]="luminance:      ";
+  27          uchar code table4[]="The Led is: ON  ";
+  28          uchar code table5[]="The Led is: Off ";
+  29          uchar code table6[]="The Led is: ON  ";
+  30          uchar code table7[]="The Led is: ON  ";
+  31          uchar code table8[]="The Led is: ON  ";
+  32          //½áÊø
+  33          unsigned char code LEDTAB[] =               //--- ¶àÑù»¨µÆµÄÏÔÊ¾´úÂë±í ---
+  34          {
+  35            0xfe,0xfd,0xfb,0xf7,0xef,0xdf,0xbf,0x7f,0xfc,0xf3,0xcf,0x3f,0xfa,0xf5,0xaf,0x5f,
+  36            0xf0,0x0f,0x7f,0xbf,0xdf,0xef,0xf7,0xfb,0xfd,0xfe,0x3f,0xcf,0xf3,0xfc,
+  37            0x5f,0xaf,0xf5,0xfa,0x0f,0xf0,
+  38          };
+  39          //sbit LED1=P1^0;//»ÆµÆ
+  40          //sbit LED2=P1^5;//ºìµÆ
+  41          //sbit LED3=P1^2;//À¶µÆ
+  42          
+  43          //ÐèÒªÐÞ¸ÄµÄ²¿·Ö
+  44          #define Ssid  "Ramsey"                                                                                  //WIFIÃû³Æ£¬£¬ÐÞ¸ÄÎª×Ô¼ºÂ·ÓÉÆ÷µÄWIFIÃû³Æ£¬ºÃÏñ²»Ö§³ÖÖÐÎÄ
+  45          #define PassWord  "11223344"              //WIFIÃÜÂë£¬ÐÞ¸ÄÎª×Ô¼ºÂ·ÓÉÆ÷µÄ
+  46          #define Uid  "d6b1cbc7d2a2103af9d33b83b2bf652c" //°Í·¨ÔÆUIDÃÜÔ¿£¬¿ØÖÆÌ¨»ñÈ¡
+  47          #define TopicLed  "Light001" //°Í·¨ÔÆ¿ØÖÆÌ¨´´½¨£¬Ãû³Æ×Ô¶¨Òå£¬app¶©ÔÄÖ÷ÌâÒªºÍÕâ¸öÍÆËÍÖ÷ÌâÒ»ÖÂ
+  48          
+  49          /*****************Ïà¹Ø±äÁ¿**************/
+  50          uchar Receive;  //½ÓÊÕµ½µÄ×Ö½Ú
+  51          uchar i,i2,count; //¶¨Ê±Æ÷ËùÓÃ±äÁ¿
+  52          uint n;                                         //½ÓÊÕµ½×Ö½ÚµÄ¸öÊý
+  53          uchar flag=0; //±êÖ¾Î»£¬¼ì²éÊÇ·ñÓÐÊý¾ÝÍ¨¹ý´®¿Ú·¢µ½MCU
+  54          uchar connected = 0;  //±êÖ¾Î»£¬¼ì²éÊÇ·ñÒÑÁ¬½Ó·þÎñÆ÷
+C51 COMPILER V9.00   ESP8266_1                                                             12/29/2021 15:08:07 PAGE 2   
+
+  55          uchar Recive_table[100]; //ÓÃÓÚ½ÓÊÕwifiÄ£¿é·´À¡µ½MCUÉÏµÄÊý¾Ý
+  56          
+  57          /*******************************************************************
+  58          Ãû³Æ£ºÑÓÊ±º¯Êý
+  59          ×÷ÓÃ£ººÁÃë¼¶ÑÓÊ±£¬Î¢Ãî¼¶ÑÓÊ±º¯Êý£¬ÎªÊý¾ÝÊÕ·¢Íê³É×÷µÈ´ý.......
+  60          ********************************************************************/
+  61          void ms_delay(uint t)
+  62          {
+  63   1            uint i,j;
+  64   1            for(i=t;i>0;i--)
+  65   1             for(j=110;j>0;j--);
+  66   1      }
+  67          
+  68          void us_delay(uchar t)
+  69          {
+  70   1            while(t--);
+  71   1      }
+  72          
+  73          
+  74          
+  75          /********************************************************************
+  76          Ãû³Æ£º²¨ÌØÂÊ·¢ÉúÆ÷º¯Êý
+  77          ×÷ÓÃ£º²¨ÌØÂÊ·¢ÉúÆ÷¿ÉÒÔÊÇT1¶¨Ê±Æ÷ÊµÏÖ£¬Ò²¿ÉÒÔÊÇMCUÄÚ²¿¶ÀÁ¢µÄ²¨ÌØÂÊ·¢ÉúÆ÷£¬
+  78          ¸÷×Ô²»Í¬µÄÔØÈëÖµ¼ÆËãÊ½£¬¾ßÌå¸ù¾Ý¼Ä´æÆ÷Ïà¹ØÉèÖÃÀ´²Î¿¼¼ÆËã£¬ÒÔÊµÏÖ
+  79          Òì²½´®ÐÐÍ¨Ñ¶¡££¨¾­²âÊÔ£¬Á½ÖÖÉèÖÃ·½Ê½¾ù¿ÉÓÃ£¬¿ÉÈÎÑ¡Ò»ÖÖ¡££©
+  80          ********************************************************************/
+  81          void Uart_Init()//Ê¹ÓÃ¶¨Ê±Æ÷1×÷Îª²¨ÌØÂÊ·¢ÉúÆ÷£¨STC89C52¡¢STC89C51¡¢AT89C51»òÕßSTC12C560S2µÈ¾ù¿É£©
+  82          {
+  83   1              SCON=0x50;     //ÉèÖÃÎª´®ÐÐ¿ÚÒÔ·½Ê½1¹¤×÷£¬8Î»Òì²½Í¨Ñ¶,ÔÊÐí½ÓÊÕÖÐ¶Ï¡£
+  84   1              //Ò»Ö¡ÐÅÏ¢Îª10Î»£¬1Î»ÆðÊ¼Î»£¬8Î»Êý¾ÝÎ»£¨µÍÎ»ÔÚÏÈ£©£¬1Î»Í£Ö¹Î»¡£
+  85   1              PCON=0x80;     //SMOD²¨ÌØÂÊÑ¡ÔñÎ»Îª1£¬SMOD=1.
+  86   1              TMOD=0x21;    //ÉèÖÃ¶¨Ê±Æ÷1Îª²¨ÌØÂÊ·¢ÉúÆ÷£¬¹¤×÷ÔÚÄ£Ê½2£¬8Î»×Ô¶¯×°ÔØ
+  87   1              TH1=0xFA ;//²¨ÌØÂÊ9600 £¬TH1=256-FOSC/16/12/²¨ÌØÂÊ
+  88   1              TL1=TH1;
+  89   1              EA=1;                            //×ÜÖÐ¶Ï´ò¿ª
+  90   1              ES=0;                             //¹Ø±Õ´®¿ÚÖÐ¶Ï
+  91   1              TR1=1;                     //Æô¶¯¶¨Ê±Æ÷1
+  92   1      
+  93   1              TH0=0xD8;                  //¶¨Ê±10ms
+  94   1              TL0=0xF0;
+  95   1              ET0=1;
+  96   1              TR0=1;
+  97   1      }
+  98          
+  99          
+ 100          
+ 101          
+ 102          /********************************************************************
+ 103          Ãû³Æ£º´®¿Ú·¢ËÍº¯Êý
+ 104          ¹¦ÄÜ£ºMCUÏòÆäËûÓëÆäÁ¬½ÓµÄÉè±¸·¢ËÍÊý¾Ý£¨´Ë´¦ÊÇÎÞÏßWIFIÄ£¿éESP8266)
+ 105          ********************************************************************/
+ 106          void Send_Uart(uchar value)
+ 107          {
+ 108   1            ES=0;         //¹Ø±Õ´®¿ÚÖÐ¶Ï
+ 109   1            TI=0;         //Çå·¢ËÍÍê±ÏÖÐ¶ÏÇëÇó±êÖ¾Î»
+ 110   1            SBUF=value;     //·¢ËÍ
+ 111   1            while(TI==0);    //µÈ´ý·¢ËÍÍê±Ï
+ 112   1            TI=0;         //Çå·¢ËÍÍê±ÏÖÐ¶ÏÇëÇó±êÖ¾Î»
+ 113   1            ES=1;         //ÔÊÐí´®¿ÚÖÐ¶Ï
+ 114   1      }
+ 115          /********************************************************************
+ 116          Ãû³Æ£º´®¿Ú·¢ËÍÊý¾Ý
+C51 COMPILER V9.00   ESP8266_1                                                             12/29/2021 15:08:07 PAGE 3   
+
+ 117          ×÷ÓÃ: Í¨¹ý´®¿Ú·¢ËÍÖ¸Áîµ½WIFIÄ£¿é£¬ÒÔ±ã¿ÉÒÔÊµÏÖÎÞÏß½ÓÈëºÍ¿ØÖÆ£¬´ø»Ø³µ»»ÐÐ
+ 118          ********************************************************************/
+ 119          void SerialSend(uchar *puf) // Êý×éÖ¸Õë*pufÖ¸Ïò×Ö·û´®Êý×é               
+ 120          {
+ 121   1      
+ 122   1            while(*puf!='\0')    //Óöµ½¿Õ¸ñÌø³öÑ­»·
+ 123   1            {
+ 124   2                 Send_Uart(*puf);  //ÏòWIFIÄ£¿é·¢ËÍ¿ØÖÆÖ¸Áî¡£
+ 125   2                 us_delay(5);
+ 126   2                 puf++;      
+ 127   2            }
+ 128   1            us_delay(5);
+ 129   1            Send_Uart('\r');//»Ø³µ
+ 130   1            us_delay(5);
+ 131   1            Send_Uart('\n');   //»»ÐÐ
+ 132   1      }   
+ 133          
+ 134          /********************************************************************
+ 135          Ãû³Æ£º´®¿Ú·¢ËÍÊý¾Ý
+ 136          ×÷ÓÃ: Í¨¹ý´®¿Ú·¢ËÍÖ¸Áîµ½WIFIÄ£¿é£¬²»´ø»Ø³µ»»ÐÐ
+ 137          ********************************************************************/
+ 138          void SerialSend_byte(uchar *puf) // Êý×éÖ¸Õë*pufÖ¸Ïò×Ö·û´®Êý×é               
+ 139          {
+ 140   1      
+ 141   1            while(*puf!='\0')    //Óöµ½¿Õ¸ñÌø³öÑ­»·
+ 142   1            {
+ 143   2                 Send_Uart(*puf);  //ÏòWIFIÄ£¿é·¢ËÍ¿ØÖÆÖ¸Áî¡£
+ 144   2                 us_delay(5);
+ 145   2                 puf++;      
+ 146   2            }
+ 147   1      }   
+ 148          
+ 149          
+ 150          /********************************************************************
+ 151          Ãû³Æ£ºÐÄÌøº¯Êý
+ 152          ×÷ÓÃ£º·¢ËÍÐÄÌø¡£Èç¹ûÒ»·ÖÖÓ²»·¢ËÍÐÄÌø£¬·þÎñÆ÷¾Í»áÈÏÎªÉè±¸µôÏß£¬¹Ê½¨Òé30s·¢ËÍÒ»´ÎÐÄÌø
+ 153          ÔÚÖÐ¶Ï1ÖÐµ÷ÓÃ£¬ºÍ·¢ËÍÊý¾Ýº¯Êý£¬ÁôÒ»¸ö¾ÍÐÐ£¬·¢ËÍÊý¾ÝÒ²Ïàµ±ÓÚÐÄÌø
+ 154          ********************************************************************/
+ 155          void Ping(void)
+ 156          {       
+ 157   1        SerialSend("cmd=0&msg=ping"); //·¢ËÍÐÄÌø
+ 158   1      }
+ 159          /********************************************************************
+ 160          Ãû³Æ£ºÁ÷Ë®µÆº¯Êý
+ 161          ×÷ÓÃ£ºÁÁÆðÀ´
+ 162          ********************************************************************/
+ 163          void WaterLamp()
+ 164          {
+ 165   1              uint k;
+ 166   1         for(k=0;k<45;k++)
+ 167   1         {
+ 168   2                      P1 = LEDTAB[k];
+ 169   2                      ms_delay(100);  
+ 170   2         }    
+ 171   1      }
+ 172          
+ 173          /********************************************************************
+ 174          Ãû³Æ£ºÖ÷º¯Êý
+ 175          ×÷ÓÃ£º³ÌÐòµÄÖ´ÐÐÈë¿Ú
+ 176          ********************************************************************/
+ 177          void main()
+ 178          {   
+C51 COMPILER V9.00   ESP8266_1                                                             12/29/2021 15:08:07 PAGE 4   
+
+ 179   1                      memset(Recive_table,'\0',sizeof Recive_table);//ÖØÖÃÊý×é
+ 180   1                      Uart_Init();//Ê¹ÓÃ¶ÀÁ¢µÄ²¨ÌØÂÊ·¢ÉúÆ÷
+ 181   1      
+ 182   1      
+ 183   1                      ms_delay(1000);
+ 184   1                      SerialSend("AT+RST");     //ÖØÐÂÆô¶¯wifiÄ£¿é
+ 185   1                      ms_delay(1000);
+ 186   1                      SerialSend("AT");     //ÖØÐÂÆô¶¯wifiÄ£¿é
+ 187   1                      ms_delay(1000);
+ 188   1                      SerialSend("AT+CWMODE=3"); //ÉèÖÃÂ·ÓÉÆ÷Ä£Ê½ 1 stationÄ£Ê½ 2 APÂ·ÓÉÆ÷Ä£Ê½ 3 station+AP»ìºÏÄ£Ê½
+ 189   1                      ms_delay(1000);
+ 190   1                      SerialSend("AT+CWJAP=\""Ssid"\",\""PassWord"\"");//ÉèÖÃÄ£¿éSSID:WIFI, PWD:ÃÜÂë ¼°°²È«ÀàÐÍ¼ÓÃÜÄ£Ê½£¨WPA2-
+             -PSK£©
+ 191   1                      ms_delay(8000);
+ 192   1                      SerialSend("AT+CIPMODE=1"); //¿ªÆôÍ¸Ã÷´«ÊäÄ£Ê½
+ 193   1                      ms_delay(1000);
+ 194   1                      SerialSend("AT+CIPSTART=\"TCP\",\"bemfa.com\",8344");  // Á¬½Ó·þÎñÆ÷ºÍ¶Ë¿Ú
+ 195   1                      ms_delay(1000);
+ 196   1                      SerialSend("AT+CIPSEND"); //½øÈëÍ¸´«Ä£Ê½£¬ÏÂÃæ·¢µÄ¶¼»áÎÞÌõ¼þ´«Êä
+ 197   1                      ms_delay(1000);
+ 198   1                      
+ 199   1              
+ 200   1                //·¢ËÍ¶©ÔÄÖ¸Áî£¬Ô­¸ñÊ½Îª£º
+ 201   1                      //cmd=1&uid=***UID***&topic=***Topic***
+ 202   1                      SerialSend_byte("cmd=1&uid=");
+ 203   1                      SerialSend_byte(Uid);
+ 204   1                      SerialSend_byte("&topic=");
+ 205   1                      SerialSend_byte(TopicLed); //¶©ÔÄ¿ØÖÆµÆµÄÖ÷Ìâ
+ 206   1                      us_delay(5);
+ 207   1                      Send_Uart('\r');//»Ø³µ
+ 208   1                      us_delay(5);
+ 209   1                      Send_Uart('\n');   //»»ÐÐ
+ 210   1                      
+ 211   1                      
+ 212   1                      connected = 1; //±íÊ¾Á¬½Ó³É¹¦£¬¿ÉÒÔ·¢ËÍÊý¾ÝÁË
+ 213   1      
+ 214   1                      //²âÊÔ
+ 215   1                      //P1=0;
+ 216   1                      ms_delay(1000);
+ 217   1                      IN1=0;  //µÆÃð
+ 218   1                      while(1)
+ 219   1                      {        
+ 220   2                              
+ 221   2                                      if(flag == 1){
+ 222   3                                              
+ 223   3                                              //Êµ¼ÊÊÕµ½µ½Ö¸Áî£ºcmd=2&uid=4d9ec352e0376f2110a0c601a2857225&topic=light002&msg=on
+ 224   3                                              //×Ö·û´®Æ¥Åä£¬µ±¼ì²âµ½×Ö·û´®msg=onÊ±£¬Ö´ÐÐ¿ªµÆ 
+ 225   3                                              //Èç¹ûÓÐ¶à¸öÖ÷Ìâ£¬¿ÉÒÔ¼ÓÉÏÖ÷ÌâÃû×ÖÒÔÇø·Ö²»Í¬Éè±¸¿ØÖÆÃüÁî£¬Èç: if(strstr(Recive_table,"light002&msg=on
+             -"))
+ 226   3                                              if(strstr(Recive_table,"&msg=on")){ 
+ 227   4                                                                      //LED1=0;   //´ò¿ªµÆ£¬P10Òý½ÅÖÃ¸ßµçÆ½
+ 228   4                                                                      //LED2=0;
+ 229   4                                                                      //LED3=0;
+ 230   4                                                                      //P1=0Xfe;
+ 231   4                                                                      IN1=1;  //µÆÁÁ
+ 232   4                                                                      ms_delay(50);
+ 233   4                                                                      WaterLamp();
+ 234   4                                              }else if(strstr(Recive_table,"&msg=off")){ ////µ±¼ì²âµ½×Ö·û´®msg=offÊ±£¬Ö´ÐÐ¹ØµÆ
+ 235   4                                                                      P1=0xff;        //¹Ø±ÕµÆ£¬P10Òý½ÅÖÃµÍµçÆ½
+ 236   4                                                                      ms_delay(50);
+ 237   4                                                                      IN1=0;  //µÆÃð
+ 238   4                                              }else if(strstr(Recive_table,"ERROR")){ //Èç¹ûµôÏß»òÍøÂç¹ÊÕÏ£¬ÖØÐÂÁ¬½Ó
+C51 COMPILER V9.00   ESP8266_1                                                             12/29/2021 15:08:07 PAGE 5   
+
+ 239   4                                                                              connected = 1;
+ 240   4                                                                              SerialSend("AT+CIPMODE=1"); //¿ªÆôÍ¸Ã÷´«ÊäÄ£Ê½
+ 241   4                                                                              ms_delay(1000);
+ 242   4                                                                              SerialSend("AT+CIPSTART=\"TCP\",\"bemfa.com\",8344");  // Á¬½Ó·þÎñÆ÷ºÍ¶Ë¿Ú
+ 243   4                                                                              ms_delay(1000);
+ 244   4                                                                              SerialSend("AT+CIPSEND"); //½øÈëÍ¸´«Ä£Ê½£¬ÏÂÃæ·¢µÄ¶¼»áÎÞÌõ¼þ´«Êä
+ 245   4                                                                              ms_delay(1000);
+ 246   4                                                      
+ 247   4                                                                              //·¢ËÍ¶©ÔÄÖ¸Áî£¬Ô­¸ñÊ½Îª£º
+ 248   4                                                                              //cmd=1&uid=***UID***&topic=***Topic***
+ 249   4                                                                              SerialSend_byte("cmd=1&uid=");
+ 250   4                                                                              SerialSend_byte(Uid);
+ 251   4                                                                              SerialSend_byte("&topic=");
+ 252   4                                                                              SerialSend_byte(TopicLed);
+ 253   4                                                                              us_delay(5);
+ 254   4                                                                              Send_Uart('\r');//»Ø³µ
+ 255   4                                                                              us_delay(5);
+ 256   4                                                                              Send_Uart('\n');   //»»ÐÐ
+ 257   4                                                                              connected = 1; //±íÊ¾Á¬½Ó³É¹¦£¬¿ÉÒÔ·¢ËÍÊý¾ÝÁË
+ 258   4      
+ 259   4                                              }
+ 260   3                                              memset(Recive_table,'\0',sizeof Recive_table);//ÖØÖÃÊý×é
+ 261   3                                              flag=0;
+ 262   3                                              
+ 263   3                                      }
+ 264   2            }         
+ 265   1      }
+ 266          
+ 267          /*********************************************************************
+ 268          Ãû³Æ£º´®ÐÐÍ¨Ñ¶ÖÐ¶Ï
+ 269          ×÷ÓÃ£º·¢ËÍ»ò½ÓÊÕ½áÊøºó½øÈë¸Ãº¯Êý£¬¶ÔÏàÓ¦µÄ±êÖ¾Î»Èí¼þÇå0£¬ÊµÏÖÄ£¿é¶ÔÊý
+ 270                   ¾ÝÕý³£µÄÊÕ·¢¡£
+ 271          
+ 272          
+ 273          ********************************************************************/
+ 274          
+ 275          void Uart_Interrupt() interrupt 4        
+ 276          {
+ 277   1      
+ 278   1            if(RI==1)
+ 279   1            {
+ 280   2                 RI=0;
+ 281   2                 Receive=SBUF;        //MCU½ÓÊÕwifiÄ£¿é·´À¡»ØÀ´µÄÊý¾Ý
+ 282   2                 Recive_table[i]=Receive;      
+ 283   2                 i++;         
+ 284   2                 if((Receive =='\n')){
+ 285   3                                                      i=0;
+ 286   3                                                      flag = 1;
+ 287   3                                      }
+ 288   2                              }
+ 289   1            else TI=0;   
+ 290   1                      
+ 291   1      }
+ 292          
+ 293          //¶¨Ê±·¢ËÍÐÄÌø£¬»ò·¢ËÍ´«¸ÐÆ÷Êý¾Ý
+ 294          //ÐÄÌø½¨Òé30s·¢Ò»´Î£¬Ò»·ÖÖÓ²»·¢Êý¾Ý£¬·þÎñÆ÷»áÈÏÎªÉè±¸µôÏß
+ 295          void timer0isr(void) interrupt 1  
+ 296          {
+ 297   1              TH0=0xD8;
+ 298   1              TL0=0xF0;
+ 299   1              i2++;
+ 300   1              if(i2==100)
+C51 COMPILER V9.00   ESP8266_1                                                             12/29/2021 15:08:07 PAGE 6   
+
+ 301   1              {
+ 302   2                  i2=0;
+ 303   2                                                      count++;
+ 304   2                                                      if(count>=30) //30Ãë£¬¿É×ÔÐÐÐÞ¸Ä
+ 305   2                                                      {
+ 306   3                                                              if(connected == 1){
+ 307   4                                                                                      Ping();   //·¢ËÍÐÄÌø
+ 308   4                                                              }
+ 309   3      
+ 310   3                                                              count=0;
+ 311   3                                                      }               
+ 312   2              }       
+ 313   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    593    ----
+   CONSTANT SIZE    =    347    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =    108    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

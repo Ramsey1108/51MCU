@@ -1,0 +1,4 @@
+"STARTUP.obj",
+"esp8266_1.obj" 
+TO "esp8266" 
+RAMSIZE(256) 
