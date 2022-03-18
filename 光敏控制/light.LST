@@ -1,0 +1,158 @@
+C51 COMPILER V9.00   LIGHT                                                                 12/24/2021 01:43:27 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE LIGHT
+OBJECT MODULE PLACED IN light.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE light.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg51.h>                       //´ËÎÄ¼þÖÐ¶¨ÒåÁËµ¥Æ¬»úµÄÒ»Ð©ÌØÊâ¹¦ÄÜ¼Ä´æÆ÷
+   2          //#include <reg52.h>
+   3          #include <intrins.h>
+   4          #include <i2c.h>
+   5          #include <stdio.h>
+   6          #include  "lcd.h"
+   7          
+   8          #define uint unsigned int
+   9          #define uchar unsigned char
+  10          
+  11          /*²éÔÄpcf8591µÄ×ÊÁÏ¿ÉÖªËüµÄ¶¼Ð´µØÖ·ÈçÏÂ*/
+  12          #define  WRITEADDR 0x90    //Ð´µØÖ·
+  13          #define  READADDR  0x91    //¶ÁµØÖ·
+  14          //¶¨Òå
+  15          uchar table3[]="luminance:      ";
+  16          uchar table4[]="The Led is: ON  ";
+  17          uchar table5[]="The Led is: Off ";
+  18          sbit LED=P1^0;
+  19          
+  20          void Pcf8591SendByte(uchar channel)     
+  21          {   
+  22   1          I2C_Start();    //¿ªÊ¼I2C×ÜÏß
+  23   1          I2C_SendByte(WRITEADDR);        //·¢ËÍÐ´Æ÷¼þµØÖ·
+  24   1          I2C_SendByte(0x40|channel);     //·¢ËÍ¿ØÖÆ¼Ä´æÆ÷
+  25   1          I2C_Stop();
+  26   1      }
+  27          
+  28          uchar Pcf8591ReadByte()         //¶ÁÈ¡Öµ
+  29          {
+  30   1          uchar num;
+  31   1          I2C_Start();
+  32   1          I2C_SendByte(READADDR);      //·¢ËÍ¶ÁÆ÷¼þµØÖ·
+  33   1          num=I2C_ReadByte();          //¶ÁÈ¡Êý¾Ý
+  34   1          I2C_Stop();                  //½áÊø×ÜÏß
+  35   1          return num;
+  36   1      }
+  37          
+  38          void UsartInit()        //ÉèÖÃ´®¿Ú
+  39          {
+  40   1              SCON=0X50;                      //ÉèÖÃÎª¹¤×÷·½Ê½1
+  41   1              TMOD=0X20;                      //ÉèÖÃ¼ÆÊýÆ÷¹¤×÷·½Ê½2
+  42   1              PCON=0X80;                      //²¨ÌØÂÊ¼Ó±¶
+  43   1              TH1=0XF4;                               //¼ÆÊýÆ÷³õÊ¼ÖµÉèÖÃ£¬×¢Òâ²¨ÌØÂÊÊÇ4800µÄ
+  44   1              TL1=0XF4;
+  45   1              ES=1;                                           //´ò¿ª½ÓÊÕÖÐ¶Ï
+  46   1              EA=1;                                           //´ò¿ª×ÜÖÐ¶Ï
+  47   1              TR1=1;                                  //´ò¿ª¼ÆÊýÆ÷
+  48   1              TI=1;                    //·¢ËÍÖÐ¶Ï±ê¼ÇÎ»£¬±ØÐëÉèÖÃ
+  49   1      }
+  50          
+  51          
+  52          void delay1s(void)   //Îó²î 0us
+  53          {
+  54   1          unsigned char a,b,c;
+  55   1          for(c=167;c>0;c--)
+C51 COMPILER V9.00   LIGHT                                                                 12/24/2021 01:43:27 PAGE 2   
+
+  56   1              for(b=171;b>0;b--)
+  57   1                  for(a=16;a>0;a--);
+  58   1          _nop_();  //if Keil,require use intrins.h
+  59   1      }
+  60          
+  61          
+  62          void main()
+  63          {
+  64   1          uint adNum;
+  65   1              uint temp;
+  66   1              uint temp1;
+  67   1              uchar a;
+  68   1          double value;
+  69   1          UsartInit();
+  70   1              //lcd³õÊ¼»¯
+  71   1              init();
+  72   1              write_com(0x80);
+  73   1              for(a=0;a<16;a++)
+  74   1                      {
+  75   2                              write_date(table3[a]);
+  76   2                              delay(10);
+  77   2                      }
+  78   1              LED=1;  
+  79   1          while(1)
+  80   1          {   
+  81   2                              //
+  82   2                      
+  83   2                                              
+  84   2                  Pcf8591SendByte(0);      //Ê¹ÓÃÍ¨µÀ0   (¿ÉÑ¡ÔñÍ¨µÀ0-3)¹âÃô´«¸ÐÆ÷A0Á¬½ÓPCF8591´«¸ÐÆ÷µÄAIN0
+  85   2                  /*adNumÒ»¶¨ÊÇ0µ½255Ö®¼äµÄÒ»¸öÊý£¬ÒòÎªpcf8591ÊÇ8Î»µÄAD/DAÐ¾Æ¬£¬ËùÒÔÊä³öµÄ·¶Î§Îª00000000µ½111111
+             -11£¬¼´0µ½255*/
+  86   2                  
+  87   2                              adNum=Pcf8591ReadByte();   //¶Á³öÊýÖµ
+  88   2                              value = adNum;
+  89   2                              value=100.0 - value*100.0/255.0; //°Ñ¹âÃôÖµ×ª»»Îª0-100µÄÊýÖµ£¬ÕâÀï255.0¿É¸ü¸Ä£¨¸ù¾ÝÊµ¼Ê²âÊÔvalue×î°µÖµ£
+             -©
+  90   2                              temp=value;
+  91   2                              table3[11]=temp%100/10+'0';
+  92   2                              table3[12]=temp%10/1+'0';
+  93   2                              table3[13]='.';
+  94   2                              temp1=value*100+1;              
+  95   2                              table3[14]=temp1/10%10+'0';
+  96   2                              table3[15]=temp1%10+'0';
+  97   2                              write_com(0x80);
+  98   2                                      for(a=0;a<16;a++)
+  99   2                                      {
+ 100   3                                      write_date(table3[a]);
+ 101   3                                      delay(10);
+ 102   3                                      }
+ 103   2                              if(temp<20)
+ 104   2                              {
+ 105   3                                      LED=0;//¿ª´ò
+ 106   3                                      write_com(0x80+0x40);
+ 107   3                                      for(a=0;a<16;a++)
+ 108   3                                      {
+ 109   4                                      write_date(table4[a]);
+ 110   4                                      delay(10);
+ 111   4                                      }
+ 112   3                                      
+ 113   3                              }
+ 114   2                              else
+ 115   2                              {
+C51 COMPILER V9.00   LIGHT                                                                 12/24/2021 01:43:27 PAGE 3   
+
+ 116   3                                      LED=1;//¹ØµÆ
+ 117   3                                      write_com(0x80+0x40);
+ 118   3                                      for(a=0;a<16;a++)
+ 119   3                                      {
+ 120   4                                      write_date(table5[a]);
+ 121   4                                      delay(10);
+ 122   4                                      }
+ 123   3                              }
+ 124   2                              printf("light:");              
+ 125   2                              printf("%.2f\n",value);    //´òÓ¡Êý¾Ýµ½´®¿Ú
+ 126   2                              delay1s();
+ 127   2                              
+ 128   2          }
+ 129   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    476    ----
+   CONSTANT SIZE    =     13    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     51       9
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

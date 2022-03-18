@@ -1,0 +1,6 @@
+"STARTUP.obj",
+"DigitalTube.obj",
+"tube2.obj",
+"interrupt.obj" 
+TO "INTERRUPT" 
+RAMSIZE(256) 

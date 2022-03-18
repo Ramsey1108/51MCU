@@ -1,0 +1,5 @@
+"STARTUP.obj",
+"DigitalTube.obj",
+"tube2.obj" 
+TO "DigitalTube2" 
+RAMSIZE(256) 

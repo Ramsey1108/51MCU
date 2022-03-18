@@ -1,0 +1,82 @@
+C51 COMPILER V9.00   LANYAAPP                                                              12/26/2021 20:03:18 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE LANYAAPP
+OBJECT MODULE PLACED IN lanyaapp.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE lanyaapp.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          
+   2          
+   3          void delay(u16 t)
+*** ERROR C141 IN LINE 3 OF LANYAAPP.C: syntax error near 't', expected ')'
+   4          {
+   5   1              u8 i;
+*** ERROR C202 IN LINE 5 OF LANYAAPP.C: 'u8': undefined identifier
+*** ERROR C141 IN LINE 5 OF LANYAAPP.C: syntax error near 'i'
+   6   1              while(t--)
+*** ERROR C202 IN LINE 6 OF LANYAAPP.C: 't': undefined identifier
+   7   1                      for(i=19;i>0;i--);
+*** ERROR C202 IN LINE 7 OF LANYAAPP.C: 'i': undefined identifier
+   8   1      }
+   9          void Write_cmd(u8 cmd)
+*** ERROR C141 IN LINE 9 OF LANYAAPP.C: syntax error near 'cmd', expected ')'
+  10          {
+  11   1              RS=0;
+*** ERROR C202 IN LINE 11 OF LANYAAPP.C: 'RS': undefined identifier
+  12   1              RW=0;
+*** ERROR C202 IN LINE 12 OF LANYAAPP.C: 'RW': undefined identifier
+  13   1              P0=cmd;
+*** ERROR C202 IN LINE 13 OF LANYAAPP.C: 'P0': undefined identifier
+  14   1              delay(5);
+  15   1              E=1;
+*** ERROR C202 IN LINE 15 OF LANYAAPP.C: 'E': undefined identifier
+  16   1              delay(10);
+  17   1              E=0;
+*** ERROR C202 IN LINE 17 OF LANYAAPP.C: 'E': undefined identifier
+  18   1      }
+  19          void Write_data(u8 dat)
+*** ERROR C141 IN LINE 19 OF LANYAAPP.C: syntax error near 'dat', expected ')'
+  20          {
+  21   1              RS=1;
+*** ERROR C202 IN LINE 21 OF LANYAAPP.C: 'RS': undefined identifier
+  22   1              RW=0;
+*** ERROR C202 IN LINE 22 OF LANYAAPP.C: 'RW': undefined identifier
+  23   1              P0=dat;
+*** ERROR C202 IN LINE 23 OF LANYAAPP.C: 'P0': undefined identifier
+  24   1              delay(5);
+  25   1              E=1;
+*** ERROR C202 IN LINE 25 OF LANYAAPP.C: 'E': undefined identifier
+  26   1              delay(10);
+  27   1              E=0;
+*** ERROR C202 IN LINE 27 OF LANYAAPP.C: 'E': undefined identifier
+  28   1      }
+  29          void LCD_init()
+  30          {
+  31   1              delay(400);
+  32   1              Wtite_cma(0x30);
+  33   1              delay(100);
+  34   1              Write_cmd(0x30);
+  35   1              delay(37);
+  36   1              Wtite_cmd(0x30);
+  37   1              delay(10);
+  38   1              Write_cmd(0x0c);
+C51 COMPILER V9.00   LANYAAPP                                                              12/26/2021 20:03:18 PAGE 2   
+
+  39   1              delay(10);
+  40   1              Write_cmd(0x01):
+  41   1              delay(100);
+  42   1              Write_cmd(0x06);
+  43   1      }
+  44          void display(u8 y,u8 a[16])
+  45          {
+  46   1              u8 i;
+  47   1              Write_cmd(y);
+  48   1              for(i=0;i<16;i++)
+  49   1              {
+  50   2                      Write_data(a[i]);
+  51   2              }
+  52   1      }
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  17 ERROR(S)

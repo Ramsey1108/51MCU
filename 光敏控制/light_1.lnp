@@ -1,0 +1,6 @@
+"STARTUP.obj",
+"light.obj",
+"i2c.obj",
+"1602.obj" 
+TO "light_1" 
+RAMSIZE(256) 
